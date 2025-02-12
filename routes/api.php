@@ -10,6 +10,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 });
+Route::get('', [SearchController::class, 'index']);
 
 Route::middleware([CheckSanctumAuth::class])->group(function () {
     Route::prefix('articles')->group(function () {
