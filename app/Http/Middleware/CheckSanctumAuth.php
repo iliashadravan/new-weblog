@@ -13,7 +13,6 @@ class CheckSanctumAuth
         if (!Auth::guard('sanctum')->check()) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
         return $next($request);
     }
 }

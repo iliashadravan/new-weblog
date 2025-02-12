@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Tests\Integration\Database\EloquentHasManyThroughTest\Category;
 
 class Article extends Model
 {
@@ -18,6 +18,16 @@ class Article extends Model
     }
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'article_categories');
+        return $this->belongsToMany(Category::class, 'article_category');
     }
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'likes', 'article_id', 'user_id');
+    }
+    public function rates()
+    {
+        return $this->belongsToMany(User::class, 'rates', 'article_id', 'user_id')
+            ->withPivot('rate');
+    }
+
 }

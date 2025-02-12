@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleController\storeRequest;
+use App\Http\Requests\ArticleController\updateRequest;
+use App\Http\Requests\RateController\rateRequest;
 use App\Models\Article;
 use App\Models\User;
 use App\Models\Category;
@@ -46,7 +48,7 @@ class ArticleController extends Controller
             'article' => $article
         ]);
     }
-    public function update(storeRequest $request, Article $article)
+    public function update(updateRequest $request, Article $article)
     {
         $validated_data = $request->validated();
 
@@ -87,4 +89,23 @@ class ArticleController extends Controller
         ]);
     }
 
+    public function rate(RateRequest $request, Article $article)
+    {
+        $validated_data = $request->validated();
+        $userId = auth()->id();
+        $existing_rating = $article->rates()->where('user_id', $userId)->first();
+
+        if ($existing_rating) {
+            $article->rates()->updateExistingPivot($userId, [
+                'rate' => $validated_data['rate'],
+            ]);
+        } else {
+            $article->rates()->attach($userId, [
+                'rate' => $validated_data['rate'],
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+        ]);
+    }
 }

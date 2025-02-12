@@ -4,21 +4,20 @@ namespace App\Http\Requests\ArticleController;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class storeRequest extends FormRequest
+class updateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+
     public function authorize(): bool
     {
         return true;
     }
 
+
     public function rules(): array
     {
         return [
-            'title'       => 'required',
-            'body'        => 'required|min:5',
+            'title'       => 'required|min:3|max:50',
+            'body'        => 'required',
             'categories'  => 'nullable|array',
             'categories.*'=> 'exists:categories,id',
         ];
