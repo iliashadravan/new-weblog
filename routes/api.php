@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware\CheckIsAdmin;
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+
 });
 
 Route::middleware([CheckSanctumAuth::class])->group(function () {
@@ -36,10 +39,11 @@ Route::middleware([CheckSanctumAuth::class])->group(function () {
             Route::delete('{article}', [AdminArticleController::class, 'destroy']);
         });
         Route::prefix('/comments')->group(function () {
-            Route::get('/{article}', [CommentController::class, 'index']);
-            Route::patch('/update-visibility', [CommentController::class, 'updateCommentsVisibility']);
-
+            Route::get('/{article}', [AdminCommentController::class, 'index']);
+            Route::patch('/update-visibility', [AdminCommentController::class, 'updateCommentsVisibility']);
         });
+        Route::post('/update-user/{user}', [UserController::class, 'updateUserInfo']);
+
     });
 });
 
