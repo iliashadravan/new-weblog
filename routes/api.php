@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Middleware\CheckSanctumAuth;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,7 @@ Route::middleware([CheckSanctumAuth::class])->group(function () {
         Route::delete('{article}', [ArticleController::class, 'destroy']);
         Route::post('/likes/{article}', [ArticleController::class, 'like']);
         Route::post('/rate/{article}', [ArticleController::class, 'rate']);
+        Route::post('/comments', [CommentController::class, 'comment']);
     });
 });
 

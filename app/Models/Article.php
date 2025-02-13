@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
+
 
 class Article extends Model
 {
@@ -29,5 +32,8 @@ class Article extends Model
         return $this->belongsToMany(User::class, 'rates', 'article_id', 'user_id')
             ->withPivot('rate');
     }
-
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
 }
