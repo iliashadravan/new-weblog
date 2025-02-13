@@ -17,18 +17,27 @@ use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
-    public function index()
-    {
-        $user_id = auth()->id();
-        $user = User::find($user_id);
+    public function index(Request $request)
+{
+    $user_id = auth()->id();
+    $user = User::find($user_id);
 
-        $articles = $user->articles;
+    $query = $user->articles();
 
-        return response()->json([
-            'success' => true,
-            'articles' => $articles
-        ]);
+    if ($request->has('search')) {
+        $search = $request->input('search');
+        $query->where('title', 'LIKE', "%{$search}%")
+            ->orWhere('body', 'LIKE', '%' . $search . '%');
     }
+
+    $articles = $query->get();
+
+    return response()->json([
+        'success' => true,
+        'articles' => $articles
+    ]);
+}
+
     public function store(storeRequest $request)
     {
         $validated_data = $request->validated();
