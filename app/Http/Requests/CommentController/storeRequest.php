@@ -4,10 +4,10 @@ namespace App\Http\Requests\CommentController;
 
 use App\Models\Article;
 use App\Models\Comment;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 use Illuminate\Validation\Validator;
 
-class storeRequest extends FormRequest
+class storeRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.

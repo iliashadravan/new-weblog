@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\AuthController;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class LoginRequest extends FormRequest
+class LoginRequest extends Request
 {
     public function authorize(): bool
     {

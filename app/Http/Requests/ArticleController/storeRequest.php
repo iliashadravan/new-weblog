@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\ArticleController;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class storeRequest extends FormRequest
+class storeRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.

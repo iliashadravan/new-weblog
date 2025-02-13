@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\ArticleController;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class updateRequest extends FormRequest
+class updateRequest extends Request
 {
 
     public function authorize(): bool
