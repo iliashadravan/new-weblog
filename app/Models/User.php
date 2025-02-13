@@ -11,14 +11,22 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public const IMAGE_PATH = 'user';
     protected $fillable = [
         'firstname',
         'lastname',
         'email',
         'phone',
         'password',
+        'image'
+    ];
+    protected $appends = [
+        'image_path'
     ];
 
+    protected $hidden = [
+        'image',
+    ];
     public function articles()
     {
         return $this->hasMany(Article::class, 'user_id');
@@ -26,5 +34,9 @@ class User extends Authenticatable
     public function likes()
     {
         return $this->belongsToMany(User::class, 'likes', 'article_id', 'user_id');
+    }
+    public function getImagePathAttribute()
+    {
+        return $this->image ? asset('storage/' . $this->image) : null;
     }
 }

@@ -13,15 +13,22 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request)
     {
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store(User::IMAGE_PATH, 'public');
+        }
         $user = User::create([
             'firstname' => $request->firstname,
             'lastname'  => $request->lastname,
             'email'     => $request->email,
             'phone'     => $request->phone,
+            'image'     =>$imagePath,
             'password'  => Hash::make($request->password),
         ]);
 
         return response()->json([
+            'success' => true,
             'user' => $user
         ], 201);
     }
