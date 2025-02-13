@@ -18,25 +18,28 @@ use Illuminate\Support\Facades\Validator;
 class ArticleController extends Controller
 {
     public function index(Request $request)
-{
-    $user_id = auth()->id();
-    $user = User::find($user_id);
+    {
+        $user_id = auth()->id();
+        $user = User::find($user_id);
 
-    $query = $user->articles();
+        $query = $user->articles()->with(['comments' => function ($query) {
+            $query->where('is_visible', true);
+        }]);
 
-    if ($request->has('search')) {
-        $search = $request->input('search');
-        $query->where('title', 'LIKE', "%{$search}%")
-            ->orWhere('body', 'LIKE', '%' . $search . '%');
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('title', 'LIKE', "%{$search}%")
+                ->orWhere('body', 'LIKE', '%' . $search . '%');
+        }
+
+        $articles = $query->get();
+
+        return response()->json([
+            'success' => true,
+            'articles' => $articles
+        ]);
     }
 
-    $articles = $query->get();
-
-    return response()->json([
-        'success' => true,
-        'articles' => $articles
-    ]);
-}
 
     public function store(storeRequest $request)
     {

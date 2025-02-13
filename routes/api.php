@@ -1,10 +1,15 @@
 <?php
 
+use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
+use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CommentController;
+use App\Http\Middleware\CheckIsAdmin;
 use App\Http\Middleware\CheckSanctumAuth;
 use Illuminate\Support\Facades\Route;
+
+
 
 
 Route::prefix('auth')->group(function () {
@@ -21,6 +26,20 @@ Route::middleware([CheckSanctumAuth::class])->group(function () {
         Route::post('/likes/{article}', [ArticleController::class, 'like']);
         Route::post('/rate/{article}', [ArticleController::class, 'rate']);
         Route::post('/comments', [CommentController::class, 'comment']);
+    });
+
+    Route::prefix('admin')->middleware([CheckIsAdmin::class])->group(function () {
+        Route::prefix('/articles')->group(function () {
+            Route::get('', [AdminArticleController::class, 'index']);
+            Route::post('', [AdminArticleController::class, 'store']);
+            Route::put('/{article}', [AdminArticleController::class, 'update']);
+            Route::delete('{article}', [AdminArticleController::class, 'destroy']);
+        });
+        Route::prefix('/comments')->group(function () {
+            Route::get('/{article}', [CommentController::class, 'index']);
+            Route::patch('/update-visibility', [CommentController::class, 'updateCommentsVisibility']);
+
+        });
     });
 });
 

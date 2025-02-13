@@ -18,7 +18,8 @@ class User extends Authenticatable
         'email',
         'phone',
         'password',
-        'image'
+        'image',
+        'is_admin'
     ];
     protected $appends = [
         'image_path'
