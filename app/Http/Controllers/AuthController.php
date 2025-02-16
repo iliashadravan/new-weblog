@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuthController\ForgetPasswordRequest;
 use App\Http\Requests\AuthController\UpdateProfileRequest;
 use App\Models\User;
 use App\Http\Requests\AuthController\RegisterRequest;
@@ -10,6 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ResetPasswordMail;
+
 
 class AuthController extends Controller
 {
@@ -31,6 +36,7 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
+            'message' => 'User successfully registered',
             'user' => $user
         ], 201);
     }
@@ -39,9 +45,10 @@ class AuthController extends Controller
     {
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!Hash::check($request->password, $user->password)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -74,7 +81,26 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Profile updated successfully!',
-            'user' => $user
+            'user'    => $user,
+
+        ]);
+    }
+    public function forgotPassword(ForgetPasswordRequest $request)
+    {
+
+        $user = User::where('email', $request->email)->first();
+
+        $newPassword = Str::random(6);
+
+        $user->update([
+            'password' => Hash::make($newPassword)
+        ]);
+
+        Mail::to($user->email)->send(new ResetPasswordMail($newPassword));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'A new password has been sent to your email!'
         ]);
     }
 }
