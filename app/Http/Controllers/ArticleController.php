@@ -35,7 +35,7 @@ class ArticleController extends Controller
         $articles = $query->get();
 
         return response()->json([
-            'success' => true,
+            'success'  => true,
             'articles' => $articles
         ]);
     }
