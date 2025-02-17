@@ -35,6 +35,9 @@ Route::middleware([CheckSanctumAuth::class])->group(function () {
     Route::prefix('admin')->middleware([CheckIsAdmin::class])->group(function () {
         Route::prefix('/articles')->group(function () {
             Route::get('', [AdminArticleController::class, 'index']);
+            Route::post('', [AdminArticleController::class, 'store']);
+            Route::put('/{article}', [AdminArticleController::class, 'update']);
+            Route::delete('{article}', [AdminArticleController::class, 'destroy']);
         });
         Route::prefix('/comments')->group(function () {
             Route::get('/{article}', [AdminCommentController::class, 'index']);
