@@ -118,14 +118,11 @@ class ArticleController extends Controller
         $existing_rating = $article->rates()->where('user_id', $userId)->first();
 
         if ($existing_rating) {
-            $article->rates()->updateExistingPivot($userId, [
-                'rate' => $validated_data['rate'],
-            ]);
+            $article->rates()->updateExistingPivot($userId, ['rate' => $validated_data['rate']]);
         } else {
-            $article->rates()->attach($userId, [
-                'rate' => $validated_data['rate'],
-            ]);
+            $article->rates()->attach($userId, ['rate' => $validated_data['rate']]);
         }
+
         return response()->json([
             'success' => true,
         ]);

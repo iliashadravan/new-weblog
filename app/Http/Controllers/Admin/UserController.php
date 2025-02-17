@@ -14,7 +14,7 @@ class UserController extends Controller
 
         $user->update([
             'firstname' => $request->firstname,
-            'lastname' => $request->lastname
+            'lastname'  => $request->lastname
         ]);
 
         return response()->json([
