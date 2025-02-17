@@ -19,17 +19,15 @@ class ArticleController extends Controller
 {
     public function index(Request $request)
     {
-        $user_id = auth()->id();
-        $user = User::find($user_id);
-
-        $query = $user->articles()->with(['comments' => function ($query) {
-            $query->where('is_visible', true);
-        }]);
+        $query = Article::with('user:id,firstname,lastname')
+            ->withCount(['likes', 'rates']);
 
         if ($request->has('search')) {
             $search = $request->input('search');
-            $query->where('title', 'LIKE', "%{$search}%")
-                ->orWhere('body', 'LIKE', '%' . $search . '%');
+            $query->where(function ($query) use ($search) {
+                $query->where('title', 'LIKE', "%{$search}%")
+                    ->orWhere('body', 'LIKE', "%{$search}%");
+            });
         }
 
         $articles = $query->get();
@@ -39,7 +37,6 @@ class ArticleController extends Controller
             'articles' => $articles
         ]);
     }
-
 
     public function store(storeRequest $request)
     {
@@ -62,11 +59,17 @@ class ArticleController extends Controller
     }
     public function update(updateRequest $request, Article $article)
     {
+        if ($article->user_id !== auth()->id()) {
+            return response()->json([
+                'success' => false,
+            ], 403);
+        }
+
         $validated_data = $request->validated();
 
         $article->update([
-            'title'   => $validated_data['title'],
-            'body'    => $validated_data['body'],
+            'title' => $validated_data['title'],
+            'body'  => $validated_data['body'],
         ]);
 
         if (!empty($validated_data['categories'])) {
@@ -81,13 +84,20 @@ class ArticleController extends Controller
 
     public function destroy(Article $article)
     {
+        if ($article->user_id !== auth()->id()) {
+            return response()->json([
+                'success' => false,
+            ], 403);
+        }
+
         $article->delete();
+
         return response()->json([
             'success' => true,
             'article' => $article,
-            'message' => 'Article deleted successfully'
         ]);
     }
+
     public function like(Article $article)
     {
         $userId = auth()->id();
