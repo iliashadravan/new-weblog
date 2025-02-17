@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\UserController;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class UserRequest extends FormRequest
+class UserRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.

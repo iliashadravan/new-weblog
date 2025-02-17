@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SmsController;
 use App\Http\Middleware\CheckIsAdmin;
 use App\Http\Middleware\CheckSanctumAuth;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/send-sms', [SmsController::class, 'sendSms']);
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
     Route::post('/reset-password', [AuthController::class, 'forgotPassword']);
     Route::post('/update-user/{user}' , [AdminUserController::class , 'updateUserInfo'])->middleware(CheckIsAdmin::class);

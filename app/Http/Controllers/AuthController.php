@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPasswordMail;
+use App\Services\SmsService;
 
 
 class AuthController extends Controller
@@ -41,7 +42,7 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request, SmsService $smsService)
     {
         $user = User::where('email', $request->email)->first();
 
@@ -49,8 +50,9 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        $smsService->sendSms($user->phone, " سلام  {$user->firstname}، شما با موفقیت وارد شدید.");
 
         return response()->json([
             'user' => $user,
