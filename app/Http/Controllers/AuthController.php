@@ -30,7 +30,7 @@ class AuthController extends Controller
             'lastname'  => $request->lastname,
             'email'     => $request->email,
             'phone'     => $request->phone,
-            'image'     =>$imagePath,
+            'image'     => $imagePath,
             'password'  => Hash::make($request->password),
         ]);
 
@@ -53,7 +53,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user'  => $user,
+            'user' => $user,
             'token' => $token
         ]);
     }
@@ -76,15 +76,21 @@ class AuthController extends Controller
             $user->image = $imagePath;
         }
 
-        $user->update($request->only(['firstname', 'lastname', 'phone']));
+        $data = $request->only(['firstname', 'lastname', 'phone']);
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $user->update($data);
 
         return response()->json([
             'success' => true,
             'message' => 'Profile updated successfully!',
-            'user'    => $user,
-
+            'user' => $user,
         ]);
     }
+
     public function forgotPassword(ForgetPasswordRequest $request)
     {
 
