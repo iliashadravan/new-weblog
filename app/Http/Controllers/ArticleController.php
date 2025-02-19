@@ -7,19 +7,20 @@ use App\Http\Requests\ArticleController\storeRequest;
 use App\Http\Requests\ArticleController\updateRequest;
 use App\Http\Requests\RateController\rateRequest;
 use App\Models\Article;
+use App\Models\Notification;
 use App\Models\User;
 use App\Models\Category;
+use App\Service\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-
 
 
 class ArticleController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Article::with('user:id,firstname,lastname')
+        $query = Article::with('user:id,firstname,lastname,image')
             ->withCount(['likes', 'rates']);
 
         if ($request->has('search')) {
@@ -38,7 +39,7 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function store(storeRequest $request)
+    public function store(storeRequest $request, SmsService $smsService)
     {
         $validated_data = $request->validated();
 
@@ -52,11 +53,22 @@ class ArticleController extends Controller
             $article->categories()->attach($validated_data['categories']);
         }
 
+        $followers = User::whereIn('id', Notification::where('author_id', Auth::id())->pluck('user_id'))->get();
+
+        foreach ($followers as $user) {
+            $smsService->sendSms(
+                $user->phone,
+                "کاربر {$article->user->firstname} یک مقاله جدید منتشر کرد برو ببین !!: {$article->title}"
+            );
+        }
+
+
         return response()->json([
             'success' => true,
             'article' => $article
         ]);
     }
+
     public function update(updateRequest $request, Article $article)
     {
         if ($article->user_id !== auth()->id()) {

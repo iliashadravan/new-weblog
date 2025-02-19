@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SmsController;
 use App\Http\Middleware\CheckIsAdmin;
 use App\Http\Middleware\CheckSanctumAuth;
@@ -32,6 +33,7 @@ Route::middleware([CheckSanctumAuth::class])->group(function () {
         Route::post('/likes/{article}', [ArticleController::class, 'like']);
         Route::post('/rate/{article}', [ArticleController::class, 'rate']);
         Route::post('/comments', [CommentController::class, 'comment']);
+        Route::post('/notifications', [NotificationController::class, 'notification']);
     });
 
     Route::prefix('admin')->middleware([CheckIsAdmin::class])->group(function () {

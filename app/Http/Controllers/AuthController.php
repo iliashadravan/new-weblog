@@ -7,6 +7,7 @@ use App\Http\Requests\AuthController\UpdateProfileRequest;
 use App\Models\User;
 use App\Http\Requests\AuthController\RegisterRequest;
 use App\Http\Requests\AuthController\LoginRequest;
+use App\Service\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -14,8 +15,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPasswordMail;
-use App\Service\SmsService;
-
 
 class AuthController extends Controller
 {
@@ -52,7 +51,10 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        $smsService->sendSms($user->phone, " سلام  {$user->firstname}، شما با موفقیت وارد شدید.");
+        $smsService->sendSms(
+            $user->phone,
+            "سلام {$user->firstname}، شما در تاریخ " . now()->format('Y-m-d') . " ساعت " . now()->format('H:i') . " وارد شدید."
+        );
 
         return response()->json([
             'user' => $user,
