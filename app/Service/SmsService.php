@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Service;
 
 use Kavenegar\KavenegarApi;
 
@@ -16,7 +16,7 @@ class SmsService
     public function sendSms($receptor, $message)
     {
         try {
-            $sender = "10008663";
+            $sender = "10001000700100";
             $this->api->Send($sender, $receptor, $message);
             return true;
         } catch (\Exception $e) {

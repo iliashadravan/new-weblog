@@ -27,6 +27,9 @@ return [
     'resend' => [
         'key' => env('RESEND_KEY'),
     ],
+    'kavenegar' => [
+        'api_key' => '486D4A4C684C30436B79522F4A564E6647773445706446666775314A6747512F654749324E4639336854453D',
+    ],
 
     'slack' => [
         'notifications' => [

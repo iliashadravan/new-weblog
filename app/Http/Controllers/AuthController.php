@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPasswordMail;
-use App\Services\SmsService;
+use App\Service\SmsService;
 
 
 class AuthController extends Controller
