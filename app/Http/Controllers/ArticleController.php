@@ -14,6 +14,7 @@ use App\Service\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Events\ArticlePublished;
 
 
 class ArticleController extends Controller
@@ -39,29 +40,22 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function store(storeRequest $request, SmsService $smsService)
+
+    public function store(storeRequest $request)
     {
         $validated_data = $request->validated();
 
         $article = Article::create([
             'title'   => $validated_data['title'],
             'body'    => $validated_data['body'],
-            'user_id' => Auth::id(),
+            'user_id' => auth()->id(),
         ]);
 
         if (!empty($validated_data['categories'])) {
             $article->categories()->attach($validated_data['categories']);
         }
 
-        $followers = User::whereIn('id', Notification::where('author_id', Auth::id())->pluck('user_id'))->get();
-
-        foreach ($followers as $user) {
-            $smsService->sendSms(
-                $user->phone,
-                "کاربر {$article->user->firstname} یک مقاله جدید منتشر کرد برو ببین !!: {$article->title}"
-            );
-        }
-
+        event(new ArticlePublished($article));
 
         return response()->json([
             'success' => true,

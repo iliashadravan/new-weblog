@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\ArticlePublished;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleController\storeRequest;
 use App\Http\Requests\ArticleController\updateRequest;
@@ -32,6 +33,8 @@ class ArticleController extends Controller
         if (!empty($validated_data['categories'])) {
             $article->categories()->attach($validated_data['categories']);
         }
+        event(new ArticlePublished($article));
+
         return response()->json([
             'success' => true,
             'article' => $article
