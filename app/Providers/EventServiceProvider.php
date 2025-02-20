@@ -2,15 +2,15 @@
 
 namespace App\Providers;
 
+use App\Events\ArticleUpdatedOrPublished;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
-use App\Events\ArticlePublished;
 use App\Listeners\SendArticleNotification;
 
 class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
-        ArticlePublished::class => [
+        ArticleUpdatedOrPublished::class => [
             SendArticleNotification::class,
         ],
     ];

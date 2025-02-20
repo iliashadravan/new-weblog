@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\ArticlePublished;
+use App\Events\ArticleUpdatedOrPublished;
 use App\Models\User;
 use App\Service\SmsService;
 
@@ -15,9 +15,14 @@ class SendArticleNotification
         $this->smsService = $smsService;
     }
 
-    public function handle(ArticlePublished $event)
+    public function handle(ArticleUpdatedOrPublished $event)
     {
         $article = $event->article;
+
+        $createdAt = $article->created_at->format('Y-m-d H:i:s');
+        $updatedAt = $article->updated_at->format('Y-m-d H:i:s');
+
+        $isUpdated = $article->created_at != $article->updated_at;
 
         $followers = User::whereIn('id', function ($query) use ($article) {
             $query->select('user_id')
@@ -25,12 +30,13 @@ class SendArticleNotification
                 ->where('author_id', $article->user_id);
         })->get();
 
-
         foreach ($followers as $user) {
-            $this->smsService->sendSms(
-                $user->phone,
-                "کاربر {$article->user->firstname} یک مقاله جدید منتشر کرد: {$article->title}"
-            );
+            $time = $isUpdated ? $updatedAt : $createdAt;
+            $action = $isUpdated ? 'ویرایش شد' : 'منتشر شد';
+
+            $message = " مقاله شماره {$article->id} توسط {$article->user->firstname} در {$time} {$action}: {$article->title}";
+
+            $this->smsService->sendSms($user->phone, $message);
         }
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Events\ArticleUpdatedOrPublished;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use App\Events\ArticlePublished;
 
 class Article extends Model
 {
@@ -16,7 +16,7 @@ class Article extends Model
     protected static function booted()
     {
         static::created(function ($article) {
-            event(new ArticlePublished($article));
+            event(new ArticleUpdatedOrPublished($article));
         });
     }
 

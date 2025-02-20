@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ArticleUpdatedOrPublished;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleController\storeRequest;
 use App\Http\Requests\ArticleController\updateRequest;
@@ -10,11 +11,9 @@ use App\Models\Article;
 use App\Models\Notification;
 use App\Models\User;
 use App\Models\Category;
-use App\Service\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Events\ArticlePublished;
 
 
 class ArticleController extends Controller
@@ -55,7 +54,7 @@ class ArticleController extends Controller
             $article->categories()->attach($validated_data['categories']);
         }
 
-        event(new ArticlePublished($article));
+        event(new ArticleUpdatedOrPublished($article));
 
         return response()->json([
             'success' => true,
@@ -81,6 +80,8 @@ class ArticleController extends Controller
         if (!empty($validated_data['categories'])) {
             $article->categories()->sync($validated_data['categories']);
         }
+
+        event(new ArticleUpdatedOrPublished($article));
 
         return response()->json([
             'success' => true,
