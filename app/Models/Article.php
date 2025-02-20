@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use App\Events\ArticleUpdatedOrPublished;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use App\Service\SmsService;
+use App\Models\User;
 
 class Article extends Model
 {
@@ -15,10 +16,26 @@ class Article extends Model
 
     protected static function booted()
     {
-        static::created(function ($article) {
-            event(new ArticleUpdatedOrPublished($article));
+        static::saved(function ($article) {
+            $smsService = app(SmsService::class);
+            $isUpdated = $article->wasChanged();
+            $time = $article->{$isUpdated ? 'updated_at' : 'created_at'}->format('Y-m-d H:i:s');
+            $action = $isUpdated ? 'ویرایش شد' : 'منتشر شد';
+
+            $followers = User::whereIn('id', function ($query) use ($article) {
+                $query->select('user_id')
+                    ->from('notifications')
+                    ->where('author_id', $article->user_id);
+            })->get();
+
+            $message = " مقاله {$article->user->firstname} در {$time} {$action}: {$article->title}";
+
+            foreach ($followers as $user) {
+                $smsService->sendSms($user->phone, $message);
+            }
         });
     }
+
 
     public function user()
     {
