@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\UserController;
+namespace App\Http\Requests\TicketController;
 
 use App\Http\Requests\Request;
 
-class UserRequest extends Request
+class StoreTicketRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class UserRequest extends Request
     public function rules(): array
     {
         return [
-            'firstname' => 'required|string|max:255',
-            'lastname'  => 'required|string|max:255'
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
         ];
     }
 }
