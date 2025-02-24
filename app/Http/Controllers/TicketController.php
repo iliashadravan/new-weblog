@@ -13,8 +13,13 @@ class TicketController extends Controller
 {
     public function index()
     {
-        return response()->json(Ticket::where('user_id', Auth::id())->with('messages')->get());
+        $tickets = Ticket::where('user_id', Auth::id())->with(['messages' => function ($query) {
+            $query->whereNull('parent_id')->with('replies');
+        }])->get();
+
+        return response()->json($tickets);
     }
+
 
     public function store(StoreTicketRequest $request)
     {
@@ -37,21 +42,26 @@ class TicketController extends Controller
 
     public function sendMessage(sendMessageRequest $request, Ticket $ticket)
     {
-        if ($ticket->user_id != Auth::id()) {
+
+        if ($request->parent_id && !TicketMessage::where('id', $request->parent_id)->where('ticket_id', $ticket->id)->exists()) {
+
             return response()->json([
                 'success' => false,
-            ], 403);
+                'message' => 'Parent message is invalid.'
+            ], 400);
         }
 
-        TicketMessage::create([
+        $message = TicketMessage::create([
             'ticket_id' => $ticket->id,
             'user_id'   => Auth::id(),
             'message'   => $request->message,
+            'parent_id' => $request->parent_id ?? null,
         ]);
 
         return response()->json([
-        'message' => 'Your message has been sent.',
-        'success' => true,
+            'success' => true,
+            'message' => 'Message sent.',
+            'data' => $message
         ]);
     }
 }
