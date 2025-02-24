@@ -22,12 +22,14 @@ class TicketController extends Controller
         $ticket = Ticket::create([
             'user_id' => Auth::id(),
             'subject' => $request->subject,
+            'label'   =>$request->label
         ]);
 
         TicketMessage::create([
             'ticket_id' => $ticket->id,
             'user_id'   => Auth::id(),
             'message'   => $request->message,
+
         ]);
 
         return response()->json(['ticket' => $ticket]);

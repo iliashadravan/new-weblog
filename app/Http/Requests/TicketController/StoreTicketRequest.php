@@ -24,6 +24,7 @@ class StoreTicketRequest extends Request
         return [
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
+            'label'   =>'nullable|string|max:50',
         ];
     }
 }

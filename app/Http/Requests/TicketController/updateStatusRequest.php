@@ -22,7 +22,7 @@ class updateStatusRequest extends Request
     public function rules(): array
     {
         return [
-            'status' => 'required|in:open,pending,closed'
+            'status' => 'required|in:open,pending,closed,resolved'
         ];
     }
 }
