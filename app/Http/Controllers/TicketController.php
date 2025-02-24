@@ -22,7 +22,7 @@ class TicketController extends Controller
         $ticket = Ticket::create([
             'user_id' => Auth::id(),
             'subject' => $request->subject,
-            'label'   =>$request->label
+            'label'   => $request->label
         ]);
 
         TicketMessage::create([

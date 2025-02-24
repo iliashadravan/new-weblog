@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TicketMessage extends Model
 {
-    protected $fillable = ['ticket_id', 'user_id', 'message'];
+    protected $fillable = ['ticket_id', 'user_id', 'message', 'parent_id'];
 
     public function ticket()
     {
@@ -17,4 +17,15 @@ class TicketMessage extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function replies()
+    {
+        return $this->hasMany(TicketMessage::class, 'parent_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(TicketMessage::class, 'parent_id');
+    }
+
 }

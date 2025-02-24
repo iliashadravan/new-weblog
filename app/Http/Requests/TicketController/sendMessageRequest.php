@@ -22,7 +22,8 @@ class sendMessageRequest extends Request
     public function rules(): array
     {
         return [
-            'message' => 'required|string'
+            'message'   => 'required|string',
+            'parent_id' => 'nullable|exists:ticket_messages,id'
         ];
     }
 }
