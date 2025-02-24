@@ -8,7 +8,7 @@ use App\Models\Ticket;
 use App\Models\TicketMessage;
 use Illuminate\Http\Request;
 
-class TicketAdminController extends Controller
+class TicketController extends Controller
 {
     public function index()
     {
@@ -20,11 +20,11 @@ class TicketAdminController extends Controller
 
         TicketMessage::create([
             'ticket_id' => $ticket->id,
-            'user_id' => auth()->id(),
-            'message' => $request->message,
+            'user_id'   => auth()->id(),
+            'message'   => $request->message,
         ]);
 
-        return response()->json(['message' => 'پیام شما ارسال شد']);
+        return response()->json(['message' => ' Your message has been sent.']);
 
     }
 
@@ -33,6 +33,6 @@ class TicketAdminController extends Controller
 
         $ticket->update(['status' => $request->status]);
 
-        return response()->json(['message' => 'وضعیت تیکت تغییر کرد']);
+        return response()->json(['message' => 'Ticket status changed']);
     }
 }

@@ -26,8 +26,8 @@ class TicketController extends Controller
 
         TicketMessage::create([
             'ticket_id' => $ticket->id,
-            'user_id' => Auth::id(),
-            'message' => $request->message,
+            'user_id'   => Auth::id(),
+            'message'   => $request->message,
         ]);
 
         return response()->json(['ticket' => $ticket]);
@@ -36,26 +36,20 @@ class TicketController extends Controller
     public function sendMessage(sendMessageRequest $request, Ticket $ticket)
     {
         if ($ticket->user_id != Auth::id()) {
-            return response()->json(['error' => 'دسترسی غیرمجاز'], 403);
+            return response()->json([
+                'success' => false,
+            ], 403);
         }
 
         TicketMessage::create([
             'ticket_id' => $ticket->id,
-            'user_id' => Auth::id(),
-            'message' => $request->message,
+            'user_id'   => Auth::id(),
+            'message'   => $request->message,
         ]);
 
-        return response()->json(['message' => 'پیام شما ارسال شد']);
-    }
-
-    public function close(Ticket $ticket)
-    {
-        if ($ticket->user_id != Auth::id()) {
-            return response()->json(['error' => 'دسترسی غیرمجاز'], 403);
-        }
-
-        $ticket->update(['status' => 'closed']);
-
-        return response()->json(['message' => 'تیکت بسته شد']);
+        return response()->json([
+        'message' => 'Your message has been sent.',
+        'success' => true,
+        ]);
     }
 }
