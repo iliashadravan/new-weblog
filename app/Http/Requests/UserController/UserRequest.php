@@ -25,6 +25,7 @@ class UserRequest extends Request
             'firstname' => 'required|string|max:255',
             'lastname'  => 'required|string|max:255',
             'is_active' => 'required|boolean',
+            'is_admin'  => 'nullable|boolean',
         ];
     }
 }

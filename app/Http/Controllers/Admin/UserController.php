@@ -14,6 +14,8 @@ class UserController extends Controller
             'firstname' => $request->firstname,
             'lastname'  => $request->lastname,
             'is_active' => $request->is_active,
+            'is_admin'  => $request->is_admin,
+
         ]);
 
         return response()->json([
