@@ -20,7 +20,6 @@ class User extends Authenticatable
         'password',
         'image',
         'is_admin',
-        'role',
         'is_active'
     ];
     protected $appends = [

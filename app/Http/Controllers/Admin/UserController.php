@@ -13,7 +13,6 @@ class UserController extends Controller
         $user->update([
             'firstname' => $request->firstname,
             'lastname'  => $request->lastname,
-            'role'      => $request->role,
             'is_active' => $request->is_active,
         ]);
 
