@@ -23,7 +23,9 @@ class UserRequest extends Request
     {
         return [
             'firstname' => 'required|string|max:255',
-            'lastname'  => 'required|string|max:255'
+            'lastname'  => 'required|string|max:255',
+            'role'      => 'required|string|in:admin,user,editor',
+            'is_active' => 'required|boolean',
         ];
     }
 }

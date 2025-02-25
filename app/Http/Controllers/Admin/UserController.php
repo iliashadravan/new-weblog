@@ -10,17 +10,17 @@ class UserController extends Controller
 {
     public function updateUserInfo(UserRequest $request, User $user)
     {
-        $validated_data = $request->validated();
-
         $user->update([
             'firstname' => $request->firstname,
-            'lastname'  => $request->lastname
+            'lastname'  => $request->lastname,
+            'role'      => $request->role,
+            'is_active' => $request->is_active,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'User information updated successfully!',
-            'user' => $user
+            'message' => 'User information was successfully updated.',
+            'user'    => $user
         ]);
     }
 }
