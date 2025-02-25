@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SavedArticleController;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\TicketController ;
 use App\Http\Middleware\CheckIsAdmin;
@@ -34,7 +35,10 @@ Route::middleware([CheckSanctumAuth::class])->group(function () {
         Route::post('/rate/{article}', [ArticleController::class, 'rate']);
         Route::post('/comments', [CommentController::class, 'comment']);
         Route::post('/notifications', [NotificationController::class, 'notification']);
+        Route::post('/{article}/saved', [SavedArticleController::class, 'toggleSave']);
+        Route::get('/user/saved-articles', [SavedArticleController::class, 'getSavedArticles']);
     });
+
     Route::prefix('tickets')->group(function () {
         Route::get('', [TicketController::class, 'index']);
         Route::post('', [TicketController::class, 'store']);

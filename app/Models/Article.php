@@ -62,4 +62,9 @@ class Article extends Model
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
+    public function savedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'saved_articles');
+    }
+
 }

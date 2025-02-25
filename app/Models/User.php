@@ -36,6 +36,11 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'likes', 'article_id', 'user_id');
     }
+    public function savedArticles()
+    {
+        return $this->belongsToMany(Article::class, 'saved_articles');
+    }
+
     public function getImagePathAttribute()
     {
         return $this->image ? asset('storage/' . $this->image) : null;
