@@ -35,7 +35,7 @@ Route::middleware([CheckSanctumAuth::class])->group(function () {
         Route::post('/rate/{article}', [ArticleController::class, 'rate']);
         Route::post('/comments', [CommentController::class, 'comment']);
         Route::post('/notifications', [NotificationController::class, 'notification']);
-        Route::post('/{article}/saved', [SavedArticleController::class, 'toggleSave']);
+        Route::post('/saved/{article}', [SavedArticleController::class, 'toggleSave']);
         Route::get('/user/saved-articles', [SavedArticleController::class, 'getSavedArticles']);
     });
 
