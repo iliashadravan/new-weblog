@@ -1,0 +1,51 @@
+name: Deploy Laravel on Merge to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: 192.168.50.22
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            exec > >(tee -a /var/log/deploy.log) 2>&1
+            echo "==> Deployment started at $(date)"
+
+            cd /var/www/laravel-project || exit
+
+            echo "==> Fetching latest code"
+            git fetch origin
+            git reset --hard origin/main
+            git clean -fd
+
+            echo "==> Running composer"
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            echo "==> Running artisan commands"
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+
+            echo "==> Setting permissions"
+            chown -R www-data:www-data storage bootstrap/cache
+            chmod -R 775 storage bootstrap/cache
+
+            echo "==> Restarting services (if needed)"
+            systemctl restart php8.2-fpm.service || true
+            systemctl restart nginx.service || true
+
+            echo "==> Deployment finished at $(date)"
